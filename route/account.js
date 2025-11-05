@@ -8,7 +8,7 @@ const verifyToken = require('../controller/accountController.js').verifyToken
 const router = express.Router();
 
 router.post('/signup', async (req, res) => {
-    const { username, password } = req.body;
+    const { username, password, email } = req.body;
 
     if(!username || !password)
         return res.status(400).json({message: "Username and Password required",});
@@ -18,7 +18,7 @@ router.post('/signup', async (req, res) => {
         if (existing.length > 0)
             return res.status(400).json({message: "User already exists"});
         const hashedPassword = await bcrypt.hash(password, 10);
-        await db.query('INSERT INTO users (username, password) VALUES (?, ?)', [username, hashedPassword]);
+        await db.query('INSERT INTO users (username, password, email) VALUES (?, ?)', [username, hashedPassword, email]);
         res.json({message: "Account created successfully"});
     } catch (err) {
         console.error(err);
@@ -42,7 +42,7 @@ router.post('/login', async (req, res) => {
         if(!valid)
             return res.status(400).json({message: "Invalid username or password"});
         const token = jwt.sign({id:user.id, username: user.username}, process.env.JWT_SECRET_KEY);
-        resUser = {username: user.username}
+        resUser = {username: user.username, email: user.email};
         res.json({message: "Login Successful", token, user: resUser});
     } catch (err) {
         console.log(err);

@@ -65,7 +65,7 @@ router.post("/deleteExpense", async (req, res) => {
 
 router.get('/viewExpenses/', async (req, res) => {
     const {id} = req.user;
-    const {category_id, filter, start_date, end_date} = req.body;
+    const {category_id, filter, start_date, end_date} = req.query;
 
 
     try {

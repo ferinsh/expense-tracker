@@ -1,11 +1,14 @@
 require('dotenv').config();
 const express = require('express');
+const cors = require("cors");
 const accountRouter = require('./route/account');
 const expenseRouter = require('./route/expense');
+
 
 const {verifyToken} = require('./controller/accountController');
 
 app = express();
+app.use(cors());
 app.use(express.json());
 
 app.use('/account', accountRouter);

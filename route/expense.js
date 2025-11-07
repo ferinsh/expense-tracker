@@ -9,13 +9,15 @@ const router = express.Router();
 router.post('/createExpense', async (req, res) => {
     // const {username} = req.body;
     const {username, id} = req.user;
-    const expense = {...req.body.expense, username, id};
+    const expense = {...req.body, id};
     // expense = {...expense,username , id};
 
     if(!username)
         return res.status(401).json({message: "User not found"});
     try {
         // console.log(req.user);
+        console.log(req.body);
+        console.log(expense);
         await db.query("INSERT INTO expenses (users_id, category_id, amount, description, date) VALUES (?,?,?,?,?)",
             [expense.id, expense.category_id, expense.amount, expense.description, expense.date]
         );

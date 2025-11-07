@@ -65,7 +65,7 @@ router.post("/deleteExpense", async (req, res) => {
 
 router.get('/viewExpenses/', async (req, res) => {
     const {id} = req.user;
-    const {category_id, filter, start_date, end_date} = req.query;
+    const {category_id, filter, start_date, end_date, limit} = req.query;
 
 
     try {
@@ -79,6 +79,7 @@ router.get('/viewExpenses/', async (req, res) => {
             query += ` AND category_id = ?`;
             params.push(category_id);
         }
+
 
         if (filter) {
             switch(filter) {
@@ -104,6 +105,13 @@ router.get('/viewExpenses/', async (req, res) => {
             }
         }
 
+        if (limit) {
+            const limitNum = parseInt(limit, 10);
+            if (!isNaN(limitNum) && limitNum > 0) {
+                query += ` LIMIT ${limitNum}`;
+            }
+        }
+
         const [expenseRows] = await db.query(query, params);
         expenses = expenseRows;
 
@@ -111,8 +119,9 @@ router.get('/viewExpenses/', async (req, res) => {
             return res.status(500).json({ message: "Empty expense list" });
         }
 
-        let totalQuery = query.replace("*", "SUM(amount) AS totalAmount");
-        const [totalamt] = await db.query(totalQuery, params);
+        let totalQuery = `SELECT SUM(amount) AS totalAmount FROM expenses WHERE users_id = ?`;
+        let totalParams = [id];
+        const [totalamt] = await db.query(totalQuery, totalParams);
         totalAmount = parseFloat(totalamt[0].totalAmount) || 0;
 
         res.json({ totalAmount, expenses });

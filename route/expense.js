@@ -108,7 +108,7 @@ router.get('/viewExpenses/', async (req, res) => {
         expenses = expenseRows;
 
         if (expenses.length === 0) {
-            return res.json({ message: "Empty expense list" });
+            return res.status(500).json({ message: "Empty expense list" });
         }
 
         let totalQuery = query.replace("*", "SUM(amount) AS totalAmount");

@@ -3,6 +3,7 @@ const express = require('express');
 const cors = require("cors");
 const accountRouter = require('./route/account');
 const expenseRouter = require('./route/expense');
+const categoriesRouter = require('./route/categories');
 
 
 const {verifyToken} = require('./controller/accountController');
@@ -14,6 +15,8 @@ app.use(express.json());
 app.use('/account', accountRouter);
 
 app.use('/expense', verifyToken, expenseRouter);
+
+app.use('/categories', verifyToken, categoriesRouter);
 
 app.use('/', (req, res) => {
     res.json({

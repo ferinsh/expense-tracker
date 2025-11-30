@@ -29,26 +29,11 @@ router.post('/updateProfile', verifyToken, async (req, res) => {
             console.log("DB CONNECT ERROR:", err);
         });
         console.log("DB CONNECT SUCCESS");
-        // await db.query(query, [username, email, userId], (err, result) => {
-            //     if (err) {
-                //         console.error(err);
-                //         return res.status(500).json({message: "Database error"});
-                //     }
-
-                //     if (result.affectedRows === 0) {
-                    //         return res.status(404).json({message: "User not found"});
-        //     }
-
-        //     res.status(200).json({
-            //         message: "Profile Updates successfully",
-        //         updated: {username, email}
-        //     })
-        // })
 
         try {
             console.log("Entering db query");
             const [result] = await db.query(query, [username, email, userId]);
-
+            // console.log("Result: ", result);
             if(result.affectedRows === 0) {
                 return res.status(404).json({message: "User not found"});
             }
